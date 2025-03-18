@@ -14,7 +14,7 @@ class AppRepositoryImpl(private val systemAppDataSource: SystemAppDataSource,
                         private val dao: AppDao) : AppRepository {
     override fun getInstalledApps(): Flow<List<AppInfo>> {
         return dao.getApps().onStart {
-                val installedApps = systemAppDataSource.fetchInstalledApps()
+                val installedApps = systemAppDataSource.fetchLauncherInstalledApps()
                 dao.insertApps(installedApps)
             }.map { entities -> entities.map { it.toDomain() } }
     }
@@ -24,7 +24,8 @@ class AppRepositoryImpl(private val systemAppDataSource: SystemAppDataSource,
     }
 
     override suspend fun syncInstalledApp() {
-        val installedApps = systemAppDataSource.fetchInstalledApps()
+        val installedApps = systemAppDataSource.fetchLauncherInstalledApps()
+        dao.deleteAllApps()
         dao.insertApps(installedApps)
     }
 }

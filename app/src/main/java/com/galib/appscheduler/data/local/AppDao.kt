@@ -14,4 +14,7 @@ interface AppDao {
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertApps(apps: List<AppEntity>)
+
+    @Query("DELETE FROM apps")
+    suspend fun deleteAllApps()
 }
