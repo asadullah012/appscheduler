@@ -29,6 +29,10 @@ class AppViewModel(
         }
     }
 
+    fun getAppInfoByPackageName(packageName: String): AppInfo? {
+        return apps.value.find { it.packageName == packageName }
+    }
+
     fun syncInstalledApps(){
         viewModelScope.launch {
             syncInstalledAppsUseCase()

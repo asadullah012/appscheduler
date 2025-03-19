@@ -8,8 +8,4 @@ interface AppRepository {
     fun getInstalledApps(): Flow<List<AppInfo>>
     suspend fun saveApps(apps: List<AppInfo>)
     suspend fun syncInstalledApp()
-
-    fun getLaunchSchedules(): Flow<List<LaunchSchedule>>
-    suspend fun insertLaunchSchedule(launchSchedule: LaunchSchedule)
-    suspend fun deleteAllLaunchSchedule()
 }

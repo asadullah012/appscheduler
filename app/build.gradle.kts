@@ -59,6 +59,8 @@ dependencies {
     testImplementation(libs.androidx.room.testing)
     implementation(libs.androidx.room.paging)
 
+    implementation(libs.accompanist.permissions)
+
     implementation(libs.koin.android)
     implementation(libs.koin.androidx.compose)
     testImplementation(libs.junit)

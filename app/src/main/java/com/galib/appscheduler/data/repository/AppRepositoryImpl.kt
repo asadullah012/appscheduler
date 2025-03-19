@@ -14,8 +14,7 @@ import kotlinx.coroutines.flow.onStart
 
 class AppRepositoryImpl(
     private val systemAppDataSource: SystemAppDataSource,
-    private val dao: AppDao,
-    private val launchScheduleDao: LaunchScheduleDao
+    private val dao: AppDao
 ) : AppRepository {
     override fun getInstalledApps(): Flow<List<AppInfo>> {
         return dao.getApps().onStart {
@@ -32,18 +31,5 @@ class AppRepositoryImpl(
         val installedApps = systemAppDataSource.fetchLauncherInstalledApps()
         dao.deleteAllApps()
         dao.insertApps(installedApps)
-    }
-
-    override fun getLaunchSchedules(): Flow<List<LaunchSchedule>> {
-        val launchSchedules = launchScheduleDao.getLaunchSchedules()
-        return launchSchedules.map { entities -> entities.map { it.toDomain() } }
-    }
-
-    override suspend fun insertLaunchSchedule(launchSchedule: LaunchSchedule) {
-        launchScheduleDao.insertLaunchSchedule(launchSchedule.toEntity())
-    }
-
-    override suspend fun deleteAllLaunchSchedule() {
-        launchScheduleDao.deleteAllaLaunchSchedules()
     }
 }

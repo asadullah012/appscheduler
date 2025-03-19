@@ -5,7 +5,9 @@ import androidx.room.Room
 import com.galib.appscheduler.data.local.AppDatabase
 import com.galib.appscheduler.data.local.SystemAppDataSource
 import com.galib.appscheduler.data.repository.AppRepositoryImpl
+import com.galib.appscheduler.data.repository.ScheduleRepositoryImpl
 import com.galib.appscheduler.domain.repository.AppRepository
+import com.galib.appscheduler.domain.repository.ScheduleRepository
 import com.galib.appscheduler.domain.usecase.DeleteAllLaunchScheduleUseCase
 import com.galib.appscheduler.domain.usecase.GetAppsUseCase
 import com.galib.appscheduler.domain.usecase.GetLaunchScheduleUseCase
@@ -25,14 +27,16 @@ val appModule = module {
             .build()
     }
     single { get<AppDatabase>().appDao() }
-    single { get<AppDatabase>().launchScheduleDao() }
     single { androidContext().packageManager }
     single { SystemAppDataSource(get()) }
-    single<AppRepository> { AppRepositoryImpl(get(), get(), get()) }
+    single<AppRepository> { AppRepositoryImpl(get(), get()) }
     factory { GetAppsUseCase(get()) }
     factory { SaveAppsUseCase(get()) }
     factory { SyncInstalledAppsUseCase(get()) }
     viewModel { AppViewModel(get(), get(), get()) }
+
+    single { get<AppDatabase>().launchScheduleDao() }
+    single<ScheduleRepository> { ScheduleRepositoryImpl(get()) }
 
     factory { GetLaunchScheduleUseCase(get()) }
     factory { InsertLaunchScheduleUseCase(get()) }

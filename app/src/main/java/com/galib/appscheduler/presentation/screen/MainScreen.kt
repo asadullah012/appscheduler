@@ -13,6 +13,7 @@ import androidx.compose.ui.Modifier
 import androidx.navigation.compose.rememberNavController
 import com.galib.appscheduler.presentation.navigation.AppNavHost
 import com.galib.appscheduler.presentation.navigation.BottomNavigationBar
+import com.galib.appscheduler.utils.GrantPermission
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -33,6 +34,7 @@ fun MainScreen() {
     ) { paddingValues ->
         Box(modifier = Modifier.padding(paddingValues)) {
             AppNavHost(navController)
+            GrantPermission {  }
         }
     }
 }
