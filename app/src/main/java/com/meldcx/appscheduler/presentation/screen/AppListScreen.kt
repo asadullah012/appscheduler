@@ -11,11 +11,17 @@ import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
+import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment.Companion.CenterHorizontally
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
@@ -27,13 +33,15 @@ import com.meldcx.appscheduler.domain.model.SCHEDULE_STATUS
 import com.meldcx.appscheduler.presentation.viewmodel.AppViewModel
 import com.meldcx.appscheduler.presentation.viewmodel.LaunchScheduleViewModel
 import com.meldcx.appscheduler.utils.getIconDrawableByPackageName
+import kotlinx.coroutines.launch
 import org.koin.androidx.compose.koinViewModel
 
 @Composable
 fun AppListScreen() {
     val appViewModel: AppViewModel = koinViewModel()
     val apps by appViewModel.apps.collectAsState()
-    val launchScheduleViewModel: LaunchScheduleViewModel = koinViewModel()
+    var showBottomSheet by remember { mutableStateOf(false) }
+    var selectedApp by remember { mutableStateOf<AppInfo?>(null) }
 
     Column(modifier = Modifier.fillMaxSize().padding(16.dp)) {
         LazyVerticalGrid(
@@ -42,16 +50,18 @@ fun AppListScreen() {
         ) {
             items(apps) { app ->
                 InstalledAppItem(app, onAppClick = {
-                    launchScheduleViewModel.insertLaunchSchedule(
-                        LaunchSchedule(
-                            packageName = app.packageName,
-                            scheduledTime = System.currentTimeMillis(),
-                            status = SCHEDULE_STATUS.SCHEDULED
-                        )
-                    )
+                    showBottomSheet = true
+                    selectedApp = app
                 })
             }
         }
+    }
+    if(showBottomSheet){
+        ScheduleBottomSheet(
+            selectedApp = selectedApp,
+            showBottomSheet = showBottomSheet,
+            onDismissRequest = { showBottomSheet = false }
+        )
     }
 }
 
