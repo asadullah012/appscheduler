@@ -1,9 +1,5 @@
 package com.meldcx.appscheduler.presentation.screen
 
-import android.content.Context
-import android.content.pm.PackageManager
-import android.widget.Toast
-import androidx.appcompat.content.res.AppCompatResources
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -20,21 +16,17 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment.Companion.CenterHorizontally
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.ImageBitmap
-import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import androidx.core.graphics.drawable.toBitmap
-import com.meldcx.appscheduler.R
 import com.meldcx.appscheduler.domain.model.AppInfo
 import com.meldcx.appscheduler.domain.model.LaunchSchedule
 import com.meldcx.appscheduler.domain.model.SCHEDULE_STATUS
 import com.meldcx.appscheduler.presentation.viewmodel.AppViewModel
 import com.meldcx.appscheduler.presentation.viewmodel.LaunchScheduleViewModel
+import com.meldcx.appscheduler.utils.getIconDrawableByPackageName
 import org.koin.androidx.compose.koinViewModel
 
 @Composable
@@ -87,32 +79,5 @@ fun InstalledAppItem(app: AppInfo, onAppClick: () -> Unit){
                 modifier = Modifier.fillMaxWidth().padding(top = 8.dp)
             )
         }
-    }
-}
-
-@Composable
-fun getIconDrawableByPackageName(context: Context, packageName: String) : ImageBitmap {
-    val packageManager = context.packageManager
-
-    val iconDrawable = remember {
-        try {
-            packageManager.getApplicationIcon(packageName)
-        } catch (e: PackageManager.NameNotFoundException) {
-            null
-        }
-    }
-
-    if (iconDrawable != null) {
-        return iconDrawable.toBitmap().asImageBitmap()
-    }
-    return AppCompatResources.getDrawable(context, R.mipmap.ic_launcher)!!.toBitmap().asImageBitmap()
-}
-
-fun openApp(context: Context, packageName: String) {
-    val intent = context.packageManager.getLaunchIntentForPackage(packageName)
-    if (intent != null) {
-        context.startActivity(intent)
-    } else {
-        Toast.makeText(context, "App not found", Toast.LENGTH_SHORT).show()
     }
 }
