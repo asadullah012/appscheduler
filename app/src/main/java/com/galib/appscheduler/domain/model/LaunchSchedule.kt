@@ -9,6 +9,7 @@ enum class SCHEDULE_STATUS {
 data class LaunchSchedule(
     val scheduleId: Long = 0L,
     val packageName: String,
+    val appName: String,
     val scheduledTime: Long,
     val status: SCHEDULE_STATUS
 )
