@@ -8,10 +8,8 @@ import com.galib.appscheduler.data.repository.AppRepositoryImpl
 import com.galib.appscheduler.data.repository.ScheduleRepositoryImpl
 import com.galib.appscheduler.domain.repository.AppRepository
 import com.galib.appscheduler.domain.repository.ScheduleRepository
-import com.galib.appscheduler.domain.usecase.DeleteAllLaunchScheduleUseCase
 import com.galib.appscheduler.domain.usecase.GetAppsUseCase
-import com.galib.appscheduler.domain.usecase.GetLaunchScheduleUseCase
-import com.galib.appscheduler.domain.usecase.InsertLaunchScheduleUseCase
+import com.galib.appscheduler.domain.usecase.LaunchScheduleUseCase
 import com.galib.appscheduler.domain.usecase.SaveAppsUseCase
 import com.galib.appscheduler.domain.usecase.SyncInstalledAppsUseCase
 import com.galib.appscheduler.presentation.viewmodel.AppViewModel
@@ -36,10 +34,7 @@ val appModule = module {
     viewModel { AppViewModel(get(), get(), get()) }
 
     single { get<AppDatabase>().launchScheduleDao() }
-    single<ScheduleRepository> { ScheduleRepositoryImpl(get()) }
-
-    factory { GetLaunchScheduleUseCase(get()) }
-    factory { InsertLaunchScheduleUseCase(get()) }
-    factory { DeleteAllLaunchScheduleUseCase(get()) }
-    viewModel { LaunchScheduleViewModel(get(), get(), get()) }
+    single<ScheduleRepository> { ScheduleRepositoryImpl(get(),get()) }
+    factory { LaunchScheduleUseCase(get(), get()) }
+    viewModel { LaunchScheduleViewModel(get(), get()) }
 }
