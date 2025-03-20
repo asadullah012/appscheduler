@@ -5,7 +5,7 @@ import androidx.room.RoomDatabase
 import com.meldcx.appscheduler.data.model.AppEntity
 import com.meldcx.appscheduler.data.model.LaunchScheduleEntity
 
-@Database(entities = [AppEntity::class, LaunchScheduleEntity::class], version = 3, exportSchema = false)
+@Database(entities = [AppEntity::class, LaunchScheduleEntity::class], version = 1, exportSchema = false)
 abstract class AppDatabase : RoomDatabase() {
     abstract fun appDao(): AppDao
     abstract fun launchScheduleDao(): LaunchScheduleDao

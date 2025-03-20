@@ -1,5 +1,7 @@
 package com.meldcx.appscheduler.presentation.screen
 
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -63,10 +65,12 @@ fun ScheduleBottomSheet(
         onDismissRequest()
     }
 
+    @RequiresApi(Build.VERSION_CODES.O)
     fun addSchedule() {
-        if (selectedDate != null && selectedTime != null) {
-            val scheduledDateTime = LocalDateTime.of(selectedDate, selectedTime)
-            val scheduledMillis = scheduledDateTime.toInstant(ZoneOffset.systemDefault().rules.getOffset(scheduledDateTime)).toEpochMilli()
+       // if (selectedDate != null && selectedTime != null) {
+//            val scheduledDateTime = LocalDateTime.of(selectedDate, selectedTime)
+            val scheduledDateTime = LocalDateTime.now()
+            val scheduledMillis = scheduledDateTime.toInstant(ZoneOffset.systemDefault().rules.getOffset(scheduledDateTime)).toEpochMilli() + 10000L
 
             launchScheduleViewModel.insertLaunchSchedule(
                 LaunchSchedule(
@@ -77,7 +81,7 @@ fun ScheduleBottomSheet(
                 )
             )
             dismissBottomSheet()
-        }
+        //}
     }
 
     if (showBottomSheet) {
@@ -120,7 +124,8 @@ fun ScheduleBottomSheet(
                 Button(
                     onClick = { addSchedule() },
                     modifier = Modifier.fillMaxWidth(),
-                    enabled = selectedDate != null && selectedTime != null
+//                    enabled = selectedDate != null && selectedTime != null
+                    enabled = true
                 ) {
                     Text("Schedule App Launch")
                 }

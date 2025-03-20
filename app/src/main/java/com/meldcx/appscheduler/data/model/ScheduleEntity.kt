@@ -6,7 +6,7 @@ import com.meldcx.appscheduler.domain.model.SCHEDULE_STATUS
 
 @Entity(tableName = "launch_schedule")
 data class LaunchScheduleEntity(
-    @PrimaryKey(autoGenerate = true) val scheduleId: Long = 0,
+    @PrimaryKey(autoGenerate = true) val scheduleId: Int = 0,
     val packageName: String,
     val appName: String,
     val scheduledTime: Long,

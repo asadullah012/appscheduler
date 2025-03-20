@@ -10,7 +10,9 @@ import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults.topAppBarColors
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.navigation.compose.rememberNavController
+import com.meldcx.appscheduler.frameworks.startAppLaunchService
 import com.meldcx.appscheduler.presentation.navigation.AppNavHost
 import com.meldcx.appscheduler.presentation.navigation.BottomNavigationBar
 import com.meldcx.appscheduler.utils.GrantPermission
@@ -34,6 +36,7 @@ fun MainScreen() {
     ) { paddingValues ->
         Box(modifier = Modifier.padding(paddingValues)) {
             AppNavHost(navController)
+            startAppLaunchService(LocalContext.current, null)
             GrantPermission {  }
         }
     }

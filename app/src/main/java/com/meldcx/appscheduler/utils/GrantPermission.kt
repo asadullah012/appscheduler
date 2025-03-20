@@ -1,5 +1,6 @@
 package com.meldcx.appscheduler.utils
 
+import android.Manifest.permission.POST_NOTIFICATIONS
 import android.Manifest.permission.SCHEDULE_EXACT_ALARM
 import android.os.Build
 import android.util.Log
@@ -16,6 +17,9 @@ fun GrantPermission(onAllPermissionGranted: @Composable () -> Unit) {
 
     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
         permissions.add(SCHEDULE_EXACT_ALARM)
+    }
+    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+        permissions.add(POST_NOTIFICATIONS)
     }
     val multiplePermissionsState = rememberMultiplePermissionsState(permissions)
 
