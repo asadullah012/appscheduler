@@ -9,7 +9,7 @@ import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface AppDao {
-    @Query("SELECT * FROM apps")
+    @Query("SELECT * FROM apps ORDER BY appName ASC")
     fun getApps(): Flow<List<AppEntity>>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)

@@ -61,6 +61,7 @@ dependencies {
     implementation(libs.androidx.room.paging)
 
     implementation(libs.accompanist.permissions)
+    implementation(libs.accompanist.pager)
 
     implementation(libs.koin.android)
     implementation(libs.koin.androidx.compose)

@@ -34,7 +34,7 @@ val appModule = module {
     viewModel { AppViewModel(get(), get(), get()) }
 
     single { get<AppDatabase>().launchScheduleDao() }
-    single<ScheduleRepository> { ScheduleRepositoryImpl(get(),get()) }
+    single<ScheduleRepository> { ScheduleRepositoryImpl(get()) }
     factory { LaunchScheduleUseCase(get(), get()) }
     viewModel { LaunchScheduleViewModel(get(), get()) }
 }
