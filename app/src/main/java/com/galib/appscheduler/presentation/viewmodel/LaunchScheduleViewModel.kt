@@ -25,7 +25,7 @@ class LaunchScheduleViewModel(
         loadLaunchSchedule()
     }
 
-    private fun loadLaunchSchedule() {
+    fun loadLaunchSchedule() {
         viewModelScope.launch {
             launchScheduleUseCase.getAll().collect { _launchSchedule.value = it }
         }
