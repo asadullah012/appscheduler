@@ -1,5 +1,6 @@
 package com.meldcx.appscheduler.presentation.screen
 
+import android.widget.Toast
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -19,6 +20,7 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.meldcx.appscheduler.utils.DatePickerModal
@@ -26,6 +28,7 @@ import com.meldcx.appscheduler.utils.TimePickerModal
 import com.meldcx.appscheduler.utils.formatTimestamp
 import kotlinx.coroutines.launch
 import java.time.LocalDate
+import java.time.LocalDateTime
 import java.time.LocalTime
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -35,13 +38,13 @@ fun ScheduleBottomSheet(
     reschedule:Boolean = false,
     scheduledTime: Long? = null,
     showBottomSheet: Boolean,
-    onSchedule: (LocalDate?, LocalTime?) -> Unit,
+    onSchedule: (LocalDateTime?) -> Unit,
     onCancelSchedule: () -> Unit = {},
     onDismissRequest: () -> Unit
 ) {
     val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
     val scope = rememberCoroutineScope()
-
+    val context = LocalContext.current
     var selectedDate by remember { mutableStateOf<LocalDate?>(null) }
     var selectedTime by remember { mutableStateOf<LocalTime?>(null) }
     var showDatePicker by remember { mutableStateOf(false) }
@@ -101,8 +104,14 @@ fun ScheduleBottomSheet(
 
                 Button(
                     onClick = {
-                        onSchedule(selectedDate,selectedTime)
-                        dismissBottomSheet()
+                        val selectedDateTime = LocalDateTime.of(selectedDate, selectedTime)
+                        val currentDateTime = LocalDateTime.now()
+                        if(selectedDateTime.isBefore(currentDateTime)){
+                            Toast.makeText(context, "Selected date and time must be in the future", Toast.LENGTH_SHORT).show()
+                        } else {
+                            onSchedule(selectedDateTime)
+                            dismissBottomSheet()
+                        }
                     },
                     modifier = Modifier.fillMaxWidth(),
                     enabled = selectedDate != null && selectedTime != null

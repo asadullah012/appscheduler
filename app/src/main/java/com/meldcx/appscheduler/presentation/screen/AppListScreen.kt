@@ -78,9 +78,9 @@ fun InstalledAppItem(app: AppInfo){
         ScheduleBottomSheet(
             title = "Schedule App: ${app.appName}",
             showBottomSheet = showBottomSheet,
-            onSchedule = { selectedDate, selectedTime ->
-                if(selectedDate != null && selectedTime != null)
-                    launchScheduleViewModel.addSchedule(app, selectedDate, selectedTime)
+            onSchedule = { selectedDateTime ->
+                if(selectedDateTime != null )
+                    launchScheduleViewModel.addSchedule(app, selectedDateTime)
             },
             onDismissRequest = { showBottomSheet = false }
         )

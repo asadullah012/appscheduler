@@ -10,9 +10,7 @@ import com.meldcx.appscheduler.domain.usecase.LaunchScheduleUseCase
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
-import java.time.LocalDate
 import java.time.LocalDateTime
-import java.time.LocalTime
 import java.time.ZoneOffset
 
 class LaunchScheduleViewModel(
@@ -33,12 +31,11 @@ class LaunchScheduleViewModel(
         }
     }
 
-    fun addSchedule(selectedApp: AppInfo, selectedDate: LocalDate, selectedTime: LocalTime){
+    fun addSchedule(selectedApp: AppInfo, selectedDateTime: LocalDateTime){
 
         viewModelScope.launch {
-            val scheduledDateTime = LocalDateTime.of(selectedDate, selectedTime)
-            //val scheduledDateTime = LocalDateTime.now()
-            val scheduledMillis = scheduledDateTime.toInstant(ZoneOffset.systemDefault().rules.getOffset(scheduledDateTime)).toEpochMilli()
+            //val selectedDateTime = LocalDateTime.now()
+            val scheduledMillis = selectedDateTime.toInstant(ZoneOffset.systemDefault().rules.getOffset(selectedDateTime)).toEpochMilli()
 
             launchScheduleUseCase.schedule(LaunchSchedule(
                 packageName = selectedApp.packageName,
@@ -49,11 +46,10 @@ class LaunchScheduleViewModel(
         }
     }
 
-    fun updateLaunchSchedule(launchSchedule: LaunchSchedule, selectedDate: LocalDate, selectedTime: LocalTime){
+    fun updateLaunchSchedule(launchSchedule: LaunchSchedule, selectedDateTime: LocalDateTime){
         viewModelScope.launch {
-            val scheduledDateTime = LocalDateTime.of(selectedDate, selectedTime)
 //          val scheduledDateTime = LocalDateTime.now()
-            val scheduledMillis = scheduledDateTime.toInstant(ZoneOffset.systemDefault().rules.getOffset(scheduledDateTime)).toEpochMilli()
+            val scheduledMillis = selectedDateTime.toInstant(ZoneOffset.systemDefault().rules.getOffset(selectedDateTime)).toEpochMilli()
             val updatedLaunchSchedule = launchSchedule.copy(
                 scheduledTime = scheduledMillis
             )
