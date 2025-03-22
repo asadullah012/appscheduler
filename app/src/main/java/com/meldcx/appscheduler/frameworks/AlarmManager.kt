@@ -8,13 +8,14 @@ import android.os.Build
 import android.util.Log
 import com.meldcx.appscheduler.domain.model.LaunchSchedule
 import com.meldcx.appscheduler.domain.model.SCHEDULE_STATUS
+import com.meldcx.appscheduler.utils.formatTimestamp
 
 fun setAlarm(context: Context, launchSchedule: LaunchSchedule) {
     if(launchSchedule.status != SCHEDULE_STATUS.SCHEDULED) {
         Log.e("AlarmManager", "setAlarm: no need to schedule ${launchSchedule.status}")
         return
     }
-    Log.d("AlarmManager", "setAlarm: setting alarm for ${launchSchedule.appName}")
+    Log.d("AlarmManager", "setAlarm: setting alarm for ${launchSchedule.appName} at ${formatTimestamp(launchSchedule.scheduledTime)}")
     val alarmManager = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
     val intent = Intent(context, AlarmReceiver::class.java).apply {
         putExtra("PACKAGE_NAME", launchSchedule.packageName)

@@ -4,7 +4,8 @@ enum class SCHEDULE_STATUS(val order: Int) {
     SCHEDULED(1),
     EXECUTED(2),
     CANCELLED_BY_USER(3),
-    FAILED_DUE_TO_APP_UNINSTALLED(4);
+    FAILED_DUE_TO_APP_UNINSTALLED(4),
+    FAILED_DUE_TO_DEVICE_TURNED_OFF(5)
 }
 
 data class LaunchSchedule(
