@@ -11,7 +11,9 @@ import androidx.compose.material3.TopAppBarDefaults.topAppBarColors
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.navigation.compose.rememberNavController
+import com.meldcx.appscheduler.R
 import com.meldcx.appscheduler.presentation.navigation.AppNavHost
 import com.meldcx.appscheduler.presentation.navigation.BottomNavigationBar
 
@@ -27,7 +29,7 @@ fun MainScreen() {
                     titleContentColor = MaterialTheme.colorScheme.primary,
                 ),
                 title = {
-                    Text("App Scheduler", style = MaterialTheme.typography.displaySmall)
+                    Text(stringResource(R.string.app_name), style = MaterialTheme.typography.displaySmall)
                 }
             ) },
         bottomBar = { BottomNavigationBar(navController) }

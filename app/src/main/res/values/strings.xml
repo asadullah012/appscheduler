@@ -1,3 +1,23 @@
 <resources>
     <string name="app_name">App Scheduler</string>
+    <string name="add_schedule_instruction">Tap on an app to schedule its launch</string>
+    <string name="reschedule_instruction">Tap on a scheduled app to reschedule or cancel its launch</string>
+    <string name="no_scheduled_apps">No Scheduled Apps</string>
+    <string name="unable_to_reschedule">Unable to reschedule app!</string>
+    <string name="ok">OK</string>
+    <string name="cancel">Cancel</string>
+    <string name="confirm">Confirm</string>
+    <string name="dismiss">Dismiss</string>
+    <string name="error_requesting_battery_optimization">Error requesting battery optimization</string>
+    <string name="overlay_permission_title">Allow Display over other apps</string>
+    <string name="overlay_permission_description">To launch app in background, allow display over other apps</string>
+    <string name="disable_battery_optimization_title">Disable Battery Optimization</string>
+    <string name="disable_battery_optimization_description">To launch app properly in time, please disable battery optimization</string>
+    <string name="grant_permission">Grant Permission</string>
+    <string name="already_granted_permission">Already Granted Permission</string>
+    <string name="pick_time">Pick a Time</string>
+    <string name="pick_date">Pick a Date</string>
+    <string name="past_date_selection_warning">Selected date and time must be in the future</string>
+    <string name="schedule_app_launch">Schedule App Launch</string>
+    <string name="cancel_schedule">Cancel Schedule</string>
 </resources>

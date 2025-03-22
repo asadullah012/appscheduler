@@ -10,8 +10,11 @@ import com.meldcx.appscheduler.domain.model.LaunchSchedule
 import com.meldcx.appscheduler.domain.model.SCHEDULE_STATUS
 
 fun setAlarm(context: Context, launchSchedule: LaunchSchedule) {
-    if(launchSchedule.status != SCHEDULE_STATUS.SCHEDULED) return
-    Log.d("TAG", "setAlarm: setting alarm for ${launchSchedule.appName}")
+    if(launchSchedule.status != SCHEDULE_STATUS.SCHEDULED) {
+        Log.e("AlarmManager", "setAlarm: no need to schedule ${launchSchedule.status}")
+        return
+    }
+    Log.d("AlarmManager", "setAlarm: setting alarm for ${launchSchedule.appName}")
     val alarmManager = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
     val intent = Intent(context, AlarmReceiver::class.java).apply {
         putExtra("PACKAGE_NAME", launchSchedule.packageName)
@@ -32,11 +35,13 @@ fun setAlarm(context: Context, launchSchedule: LaunchSchedule) {
 }
 
 fun updateAlarm(context: Context, launchSchedule: LaunchSchedule) {
+    Log.d("AlarmManager", "updateAlarm: updating alarm for ${launchSchedule.appName}")
     cancelAlarm(context, launchSchedule)
     setAlarm(context, launchSchedule)
 }
 
 fun cancelAlarm(context: Context, launchSchedule: LaunchSchedule) {
+    Log.d("AlarmManager", "cancelAlarm: canceling alarm for ${launchSchedule.appName}")
     val alarmManager = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
     val intent = Intent(context, AlarmReceiver::class.java)
     val pendingIntent = PendingIntent.getBroadcast(
@@ -46,6 +51,7 @@ fun cancelAlarm(context: Context, launchSchedule: LaunchSchedule) {
 }
 
 fun isAlarmScheduled(context: Context, scheduleId: Int): Boolean {
+    Log.d("AlarmManager", "isAlarmScheduled: $scheduleId")
     val intent = Intent(context, AlarmReceiver::class.java)
     val pendingIntent = PendingIntent.getBroadcast(
         context, scheduleId, intent, PendingIntent.FLAG_NO_CREATE or PendingIntent.FLAG_IMMUTABLE

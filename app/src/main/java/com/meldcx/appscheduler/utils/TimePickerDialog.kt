@@ -7,6 +7,8 @@ import androidx.compose.material3.TextButton
 import androidx.compose.material3.TimePicker
 import androidx.compose.material3.rememberTimePickerState
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.res.stringResource
+import com.meldcx.appscheduler.R
 import java.time.LocalTime
 import java.util.Calendar
 
@@ -46,12 +48,12 @@ fun TimePickerDialog(
         onDismissRequest = onDismiss,
         dismissButton = {
             TextButton(onClick = { onDismiss() }) {
-                Text("Dismiss")
+                Text(stringResource(R.string.cancel))
             }
         },
         confirmButton = {
             TextButton(onClick = { onConfirm() }) {
-                Text("OK")
+                Text(stringResource(R.string.ok))
             }
         },
         text = { content() }

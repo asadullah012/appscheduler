@@ -8,10 +8,8 @@ import com.meldcx.appscheduler.data.repository.AppRepositoryImpl
 import com.meldcx.appscheduler.data.repository.ScheduleRepositoryImpl
 import com.meldcx.appscheduler.domain.repository.AppRepository
 import com.meldcx.appscheduler.domain.repository.ScheduleRepository
-import com.meldcx.appscheduler.domain.usecase.GetAppsUseCase
+import com.meldcx.appscheduler.domain.usecase.AppsUseCase
 import com.meldcx.appscheduler.domain.usecase.LaunchScheduleUseCase
-import com.meldcx.appscheduler.domain.usecase.SaveAppsUseCase
-import com.meldcx.appscheduler.domain.usecase.SyncInstalledAppsUseCase
 import com.meldcx.appscheduler.presentation.viewmodel.AppViewModel
 import com.meldcx.appscheduler.presentation.viewmodel.LaunchScheduleViewModel
 import org.koin.android.ext.koin.androidContext
@@ -28,10 +26,8 @@ val appModule = module {
     single { androidContext().packageManager }
     single { SystemAppDataSource(get()) }
     single<AppRepository> { AppRepositoryImpl(get(), get()) }
-    factory { GetAppsUseCase(get()) }
-    factory { SaveAppsUseCase(get()) }
-    factory { SyncInstalledAppsUseCase(get()) }
-    viewModel { AppViewModel(get(), get(), get()) }
+    factory { AppsUseCase(get()) }
+    viewModel { AppViewModel(get(), get()) }
 
     single { get<AppDatabase>().launchScheduleDao() }
     single<ScheduleRepository> { ScheduleRepositoryImpl(get()) }

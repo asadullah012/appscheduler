@@ -1,46 +1,12 @@
 package com.meldcx.appscheduler.utils
 
-import android.Manifest.permission.SCHEDULE_EXACT_ALARM
 import android.content.Context
 import android.content.Intent
-import android.os.Build
 import android.os.PowerManager
 import android.provider.Settings
 import android.util.Log
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.core.net.toUri
-import com.google.accompanist.permissions.ExperimentalPermissionsApi
-import com.google.accompanist.permissions.rememberMultiplePermissionsState
-
-
-@OptIn(ExperimentalPermissionsApi::class)
-@Composable
-fun GrantPermission(onAllPermissionGranted: @Composable () -> Unit) {
-    val permissions:MutableList<String> = mutableListOf()
-
-    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-        permissions.add(SCHEDULE_EXACT_ALARM)
-    }
-    val multiplePermissionsState = rememberMultiplePermissionsState(permissions)
-
-    LaunchedEffect(Unit) {
-        if (!multiplePermissionsState.allPermissionsGranted) {
-            multiplePermissionsState.launchMultiplePermissionRequest()
-        }
-    }
-
-    when {
-        multiplePermissionsState.allPermissionsGranted -> {
-            Log.i("TAG", "GrantPermission: All permissions granted!")
-            onAllPermissionGranted()
-        }
-    }
-}
+import com.meldcx.appscheduler.R
 
 fun canRequestManageOverlayPermission(context: Context): Boolean {
     return !Settings.canDrawOverlays(context)
@@ -66,6 +32,7 @@ fun requestDisableBatteryOptimization(context: Context, packageName:String){
         }
         context.startActivity(intent)
     } catch (e: Exception) {
-        Log.e("BatteryOptimization", "Error requesting battery optimization", e)
+        Log.e("BatteryOptimization",
+            context.getString(R.string.error_requesting_battery_optimization), e)
     }
 }

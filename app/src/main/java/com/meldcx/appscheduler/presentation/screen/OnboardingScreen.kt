@@ -23,10 +23,12 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
+import com.meldcx.appscheduler.R
 import com.meldcx.appscheduler.utils.canRequestDisableBatteryOptimization
 import com.meldcx.appscheduler.utils.canRequestManageOverlayPermission
 import com.meldcx.appscheduler.utils.requestDisableBatteryOptimization
@@ -44,8 +46,8 @@ fun getOnboardingPages(context: Context): List<OnboardingPage> {
     val pages = mutableListOf<OnboardingPage>()
     if(canRequestManageOverlayPermission(context)){
         pages.add(OnboardingPage(
-            "Allow Display over other apps",
-            "To launch app in background, allow display over other apps",
+            context.getString(R.string.overlay_permission_title),
+            context.getString(R.string.overlay_permission_description),
             {requestManageOverlayPermission(context)},
             {canRequestManageOverlayPermission(context)}
         ))
@@ -53,8 +55,8 @@ fun getOnboardingPages(context: Context): List<OnboardingPage> {
 
     if(canRequestDisableBatteryOptimization(context)){
         pages.add(OnboardingPage(
-            "Disable Battery Optimization",
-            "To launch app properly in time, please disable battery optimization",
+            context.getString(R.string.disable_battery_optimization_title),
+            context.getString(R.string.disable_battery_optimization_description),
             { requestDisableBatteryOptimization(context, context.packageName) },
             { canRequestDisableBatteryOptimization(context) }
         ))
@@ -87,7 +89,7 @@ fun PermissionOnboardingDialog(context: Context, onDismiss: () -> Unit) {
     fun onNextClick(){
         coroutineScope.launch {
             if (pagerState.currentPage == pages.size - 1) {
-                onDismiss() // Finish button closes the dialog
+                onDismiss()
             } else {
                 pagerState.animateScrollToPage(pagerState.currentPage + 1)
             }
@@ -159,10 +161,10 @@ fun PermissionPage(title: String, description: String, onGrantClick: () -> Unit,
         Spacer(modifier = Modifier.height(16.dp))
         if(canGrant()){
             Button(onClick = { onGrantClick() }) {
-                Text("Grant Permission")
+                Text(stringResource(R.string.grant_permission))
             }
         } else {
-            Text("Already Granted Permission")
+            Text(stringResource(R.string.already_granted_permission))
         }
     }
 }

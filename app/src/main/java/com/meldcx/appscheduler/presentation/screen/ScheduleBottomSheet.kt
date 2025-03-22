@@ -21,8 +21,10 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import com.meldcx.appscheduler.R
 import com.meldcx.appscheduler.utils.DatePickerModal
 import com.meldcx.appscheduler.utils.TimePickerModal
 import com.meldcx.appscheduler.utils.formatTimestamp
@@ -88,7 +90,7 @@ fun ScheduleBottomSheet(
                     onClick = { showDatePicker = true },
                     modifier = Modifier.fillMaxWidth()
                 ) {
-                    Text(text = selectedDate?.toString() ?: "Pick a Date")
+                    Text(text = selectedDate?.toString() ?: stringResource(R.string.pick_date))
                 }
 
                 Spacer(modifier = Modifier.height(8.dp))
@@ -97,7 +99,7 @@ fun ScheduleBottomSheet(
                     onClick = { showTimePicker = true },
                     modifier = Modifier.fillMaxWidth()
                 ) {
-                    Text(text = selectedTime?.toString() ?: "Pick a Time")
+                    Text(text = selectedTime?.toString() ?: stringResource(R.string.pick_time))
                 }
 
                 Spacer(modifier = Modifier.height(16.dp))
@@ -107,7 +109,8 @@ fun ScheduleBottomSheet(
                         val selectedDateTime = LocalDateTime.of(selectedDate, selectedTime)
                         val currentDateTime = LocalDateTime.now()
                         if(selectedDateTime.isBefore(currentDateTime)){
-                            Toast.makeText(context, "Selected date and time must be in the future", Toast.LENGTH_SHORT).show()
+                            Toast.makeText(context,
+                                context.getString(R.string.past_date_selection_warning), Toast.LENGTH_SHORT).show()
                         } else {
                             onSchedule(selectedDateTime)
                             dismissBottomSheet()
@@ -116,7 +119,7 @@ fun ScheduleBottomSheet(
                     modifier = Modifier.fillMaxWidth(),
                     enabled = selectedDate != null && selectedTime != null
                 ) {
-                    Text("Schedule App Launch")
+                    Text(stringResource(R.string.schedule_app_launch))
                 }
 
                 Spacer(modifier = Modifier.height(8.dp))
@@ -129,7 +132,7 @@ fun ScheduleBottomSheet(
                         },
                         modifier = Modifier.fillMaxWidth()
                     ) {
-                        Text("Cancel Schedule")
+                        Text(stringResource(R.string.cancel_schedule))
                     }
                     Spacer(modifier = Modifier.height(8.dp))
                 }
@@ -138,7 +141,7 @@ fun ScheduleBottomSheet(
                     onClick = { dismissBottomSheet() },
                     modifier = Modifier.fillMaxWidth()
                 ) {
-                    Text("Close")
+                    Text(stringResource(R.string.dismiss))
                 }
             }
         }
