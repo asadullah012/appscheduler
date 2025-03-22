@@ -95,9 +95,9 @@ fun ScheduleItem(launchScheduleViewModel: LaunchScheduleViewModel, launchSchedul
             reschedule = true,
             scheduledTime = launchSchedule.scheduledTime,
             showBottomSheet = showBottomSheet,
-            onSchedule = { selectedDate, selectedTime ->
-                if(selectedDate != null && selectedTime != null){
-                    launchScheduleViewModel.updateLaunchSchedule(launchSchedule, selectedDate, selectedTime)
+            onSchedule = { selectedDateTime ->
+                if(selectedDateTime != null){
+                    launchScheduleViewModel.updateLaunchSchedule(launchSchedule, selectedDateTime)
                 }
             },
             onCancelSchedule = {
