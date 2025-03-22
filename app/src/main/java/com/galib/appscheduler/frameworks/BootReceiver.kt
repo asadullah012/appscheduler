@@ -22,9 +22,9 @@ class BootReceiver : BroadcastReceiver() {
             }
             launchSchedule.forEach {
                 Log.d("TAG", "onReceive: ${it.appName} at ${formatTimestamp(it.scheduledTime)}")
-               if(!isAlarmScheduled(context, it.scheduleId)){
-                   setAlarm(context, it)
-               }
+                if(!isAlarmScheduled(context, it.scheduleId)){
+                    setAlarm(context, it)
+                }
             }
         }
     }

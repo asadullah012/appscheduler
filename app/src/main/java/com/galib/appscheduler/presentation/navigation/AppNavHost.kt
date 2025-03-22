@@ -15,14 +15,14 @@ fun AppNavHost(
 ) {
     NavHost(
         navController = navController,
-        startDestination = "all_app",
+        startDestination = BottomNavItem.AppScreen.route,
         modifier = modifier
     ) {
         composable("all_app") {
             AppListScreen()
         }
         composable(
-            route = "all_schedule"
+            route = BottomNavItem.ScheduleScreen.route
         ) {
             AppScheduleScreen()
         }
