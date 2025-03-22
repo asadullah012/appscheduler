@@ -38,7 +38,7 @@ class ScheduleRepositoryImpl(
     }
 
     override fun getScheduleByStatus(status: SCHEDULE_STATUS): Flow<List<LaunchSchedule>> {
-        return launchScheduleDao.getScheduleByStatus(status).map { entities ->
+        return launchScheduleDao.getScheduleByStatus(status.ordinal).map { entities ->
             entities.map { it.toDomain() }
         }
     }

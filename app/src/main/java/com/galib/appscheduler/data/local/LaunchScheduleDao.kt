@@ -18,7 +18,7 @@ interface LaunchScheduleDao {
     fun getLaunchSchedulesByScheduleId(scheduleId: Int): Flow<LaunchScheduleEntity>
 
     @Query("SELECT * FROM launch_schedule WHERE status = :status")
-    fun getScheduleByStatus(status: SCHEDULE_STATUS): Flow<List<LaunchScheduleEntity>>
+    fun getScheduleByStatus(status: Int): Flow<List<LaunchScheduleEntity>>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertLaunchSchedule(launchSchedule: LaunchScheduleEntity): Long

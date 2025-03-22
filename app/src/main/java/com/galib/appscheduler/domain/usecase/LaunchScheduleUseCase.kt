@@ -21,7 +21,9 @@ class LaunchScheduleUseCase(
 
     suspend fun update(launchSchedule: LaunchSchedule) {
         scheduleRepository.updateLaunchSchedule(launchSchedule)
-        updateAlarm(context, launchSchedule)
+        if(launchSchedule.status == SCHEDULE_STATUS.SCHEDULED) {
+            updateAlarm(context, launchSchedule)
+        }
     }
 
     suspend fun cancel(launchSchedule: LaunchSchedule) {
