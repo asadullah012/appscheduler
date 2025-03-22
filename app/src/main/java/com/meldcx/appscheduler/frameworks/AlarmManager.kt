@@ -7,8 +7,10 @@ import android.content.Intent
 import android.os.Build
 import android.util.Log
 import com.meldcx.appscheduler.domain.model.LaunchSchedule
+import com.meldcx.appscheduler.domain.model.SCHEDULE_STATUS
 
 fun setAlarm(context: Context, launchSchedule: LaunchSchedule) {
+    if(launchSchedule.status != SCHEDULE_STATUS.SCHEDULED) return
     Log.d("TAG", "setAlarm: setting alarm for ${launchSchedule.appName}")
     val alarmManager = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
     val intent = Intent(context, AlarmReceiver::class.java).apply {
@@ -27,7 +29,6 @@ fun setAlarm(context: Context, launchSchedule: LaunchSchedule) {
     } else {
         alarmManager.setExact(AlarmManager.RTC_WAKEUP, launchSchedule.scheduledTime, pendingIntent)
     }
-
 }
 
 fun updateAlarm(context: Context, launchSchedule: LaunchSchedule) {
@@ -44,3 +45,10 @@ fun cancelAlarm(context: Context, launchSchedule: LaunchSchedule) {
     alarmManager.cancel(pendingIntent)
 }
 
+fun isAlarmScheduled(context: Context, scheduleId: Int): Boolean {
+    val intent = Intent(context, AlarmReceiver::class.java)
+    val pendingIntent = PendingIntent.getBroadcast(
+        context, scheduleId, intent, PendingIntent.FLAG_NO_CREATE or PendingIntent.FLAG_IMMUTABLE
+    )
+    return pendingIntent != null
+}

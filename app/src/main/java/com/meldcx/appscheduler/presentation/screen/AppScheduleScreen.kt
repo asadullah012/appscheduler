@@ -1,5 +1,6 @@
 package com.meldcx.appscheduler.presentation.screen
 
+import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -17,12 +18,16 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.meldcx.appscheduler.domain.model.LaunchSchedule
+import com.meldcx.appscheduler.domain.model.SCHEDULE_STATUS
 import com.meldcx.appscheduler.presentation.viewmodel.LaunchScheduleViewModel
 import com.meldcx.appscheduler.utils.formatTimestamp
 import com.meldcx.appscheduler.utils.getIconDrawableByPackageName
@@ -38,7 +43,7 @@ fun AppScheduleScreen() {
         } else {
             LazyColumn {
                 items(launchSchedules) { launchSchedule ->
-                    ScheduleItem(launchSchedule)
+                    ScheduleItem(launchScheduleViewModel, launchSchedule)
                 }
             }
         }
@@ -46,13 +51,22 @@ fun AppScheduleScreen() {
 }
 
 @Composable
-fun ScheduleItem(launchSchedule: LaunchSchedule) {
+fun ScheduleItem(launchScheduleViewModel: LaunchScheduleViewModel, launchSchedule: LaunchSchedule) {
     val context = LocalContext.current
+    var showBottomSheet by remember { mutableStateOf(false) }
+
     Card(
         modifier = Modifier.fillMaxWidth().padding(8.dp),
         colors = CardDefaults.cardColors(
             containerColor = MaterialTheme.colorScheme.surfaceContainer,
-        )
+        ),
+        onClick = {
+            if(launchSchedule.status == SCHEDULE_STATUS.SCHEDULED) {
+                showBottomSheet = true
+            } else {
+                Toast.makeText(context, "Unable to reschedule app!", Toast.LENGTH_SHORT).show()
+            }
+        }
     ) {
         Row(modifier = Modifier.fillMaxSize().padding(8.dp),
             verticalAlignment = Alignment.CenterVertically){
@@ -74,6 +88,24 @@ fun ScheduleItem(launchSchedule: LaunchSchedule) {
                 )
             }
         }
-
+    }
+    if(showBottomSheet){
+        ScheduleBottomSheet(
+            title = "Reschedule App: ${launchSchedule.appName}",
+            reschedule = true,
+            scheduledTime = launchSchedule.scheduledTime,
+            showBottomSheet = showBottomSheet,
+            onSchedule = { selectedDate, selectedTime ->
+                if(selectedDate != null && selectedTime != null){
+                    launchScheduleViewModel.updateLaunchSchedule(launchSchedule, selectedDate, selectedTime)
+                }
+            },
+            onCancelSchedule = {
+                launchScheduleViewModel.cancelLaunchSchedule(launchSchedule)
+            },
+            onDismissRequest = {
+                showBottomSheet = false
+            }
+        )
     }
 }

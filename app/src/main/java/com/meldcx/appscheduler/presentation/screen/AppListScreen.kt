@@ -11,16 +11,13 @@ import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
-import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment.Companion.CenterHorizontally
 import androidx.compose.ui.Modifier
@@ -28,20 +25,15 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.meldcx.appscheduler.domain.model.AppInfo
-import com.meldcx.appscheduler.domain.model.LaunchSchedule
-import com.meldcx.appscheduler.domain.model.SCHEDULE_STATUS
 import com.meldcx.appscheduler.presentation.viewmodel.AppViewModel
 import com.meldcx.appscheduler.presentation.viewmodel.LaunchScheduleViewModel
 import com.meldcx.appscheduler.utils.getIconDrawableByPackageName
-import kotlinx.coroutines.launch
 import org.koin.androidx.compose.koinViewModel
 
 @Composable
 fun AppListScreen() {
     val appViewModel: AppViewModel = koinViewModel()
     val apps by appViewModel.apps.collectAsState()
-    var showBottomSheet by remember { mutableStateOf(false) }
-    var selectedApp by remember { mutableStateOf<AppInfo?>(null) }
 
     Column(modifier = Modifier.fillMaxSize().padding(16.dp)) {
         LazyVerticalGrid(
@@ -49,25 +41,18 @@ fun AppListScreen() {
             columns = GridCells.Adaptive(minSize = 100.dp)
         ) {
             items(apps) { app ->
-                InstalledAppItem(app, onAppClick = {
-                    showBottomSheet = true
-                    selectedApp = app
-                })
+                InstalledAppItem(app)
             }
         }
     }
-    if(showBottomSheet){
-        ScheduleBottomSheet(
-            selectedApp = selectedApp,
-            showBottomSheet = showBottomSheet,
-            onDismissRequest = { showBottomSheet = false }
-        )
-    }
+
 }
 
 @Composable
-fun InstalledAppItem(app: AppInfo, onAppClick: () -> Unit){
+fun InstalledAppItem(app: AppInfo){
     val context = LocalContext.current
+    var showBottomSheet by remember { mutableStateOf(false) }
+    val launchScheduleViewModel: LaunchScheduleViewModel = koinViewModel()
 
     Card(
         modifier = Modifier.fillMaxWidth().padding(8.dp),
@@ -75,8 +60,7 @@ fun InstalledAppItem(app: AppInfo, onAppClick: () -> Unit){
             containerColor = MaterialTheme.colorScheme.surfaceContainer,
         ),
         onClick = {
-            //openApp(context, app.packageName)
-            onAppClick()
+            showBottomSheet = true
         }
     ) {
         Column(
@@ -89,5 +73,16 @@ fun InstalledAppItem(app: AppInfo, onAppClick: () -> Unit){
                 modifier = Modifier.fillMaxWidth().padding(top = 8.dp)
             )
         }
+    }
+    if(showBottomSheet){
+        ScheduleBottomSheet(
+            title = "Schedule App: ${app.appName}",
+            showBottomSheet = showBottomSheet,
+            onSchedule = { selectedDate, selectedTime ->
+                if(selectedDate != null && selectedTime != null)
+                    launchScheduleViewModel.addSchedule(app, selectedDate, selectedTime)
+            },
+            onDismissRequest = { showBottomSheet = false }
+        )
     }
 }

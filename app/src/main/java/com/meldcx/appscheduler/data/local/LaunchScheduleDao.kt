@@ -4,21 +4,26 @@ import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
+import androidx.room.Update
 import com.meldcx.appscheduler.data.model.LaunchScheduleEntity
+import com.meldcx.appscheduler.domain.model.SCHEDULE_STATUS
 import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface LaunchScheduleDao {
-    @Query("SELECT * FROM launch_schedule")
+    @Query("SELECT * FROM launch_schedule ORDER BY status, scheduledTime ASC")
     fun getAllLaunchSchedules(): Flow<List<LaunchScheduleEntity>>
 
     @Query("SELECT * FROM launch_schedule WHERE scheduleId = :scheduleId")
     fun getLaunchSchedulesByScheduleId(scheduleId: Int): Flow<LaunchScheduleEntity>
 
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insertLaunchSchedule(launchSchedule: LaunchScheduleEntity)
+    @Query("SELECT * FROM launch_schedule WHERE status = :status")
+    fun getScheduleByStatus(status: SCHEDULE_STATUS): Flow<List<LaunchScheduleEntity>>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun insertLaunchSchedule(launchSchedule: LaunchScheduleEntity): Long
+
+    @Update
     suspend fun updateLaunchSchedule(launchSchedule: LaunchScheduleEntity)
 
     @Query("DELETE FROM launch_schedule")

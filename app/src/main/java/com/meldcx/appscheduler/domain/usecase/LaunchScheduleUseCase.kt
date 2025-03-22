@@ -2,25 +2,31 @@ package com.meldcx.appscheduler.domain.usecase
 
 import android.content.Context
 import com.meldcx.appscheduler.domain.model.LaunchSchedule
+import com.meldcx.appscheduler.domain.model.SCHEDULE_STATUS
 import com.meldcx.appscheduler.domain.repository.ScheduleRepository
+import com.meldcx.appscheduler.frameworks.cancelAlarm
 import com.meldcx.appscheduler.frameworks.setAlarm
+import com.meldcx.appscheduler.frameworks.updateAlarm
 import kotlinx.coroutines.flow.Flow
 
 class LaunchScheduleUseCase(
     private val context: Context,
     private val scheduleRepository: ScheduleRepository
 ) {
-    suspend  fun schedule(launchSchedule: LaunchSchedule) {
-        scheduleRepository.scheduleAppLaunch(launchSchedule)
-        setAlarm(context, launchSchedule)
+    suspend fun schedule(launchSchedule: LaunchSchedule) {
+        val scheduleId = scheduleRepository.scheduleAppLaunch(launchSchedule)
+        val updatedLaunchSchedule = launchSchedule.copy(scheduleId = scheduleId)
+        setAlarm(context, updatedLaunchSchedule)
     }
 
     suspend fun update(launchSchedule: LaunchSchedule) {
         scheduleRepository.updateLaunchSchedule(launchSchedule)
+        updateAlarm(context, launchSchedule)
     }
 
     suspend fun cancel(launchSchedule: LaunchSchedule) {
         scheduleRepository.cancelLaunchSchedule(launchSchedule)
+        cancelAlarm(context, launchSchedule)
     }
 
     fun getByScheduleId(scheduleId: Int): Flow<LaunchSchedule> {
@@ -29,6 +35,10 @@ class LaunchScheduleUseCase(
 
     fun getAll(): Flow<List<LaunchSchedule>> {
         return scheduleRepository.getAllLaunchSchedules()
+    }
+
+    fun getScheduledAppsByStatus(status: SCHEDULE_STATUS): Flow<List<LaunchSchedule>> {
+        return scheduleRepository.getScheduleByStatus(status)
     }
 
     suspend fun deleteByScheduleId(scheduleId: Int){
