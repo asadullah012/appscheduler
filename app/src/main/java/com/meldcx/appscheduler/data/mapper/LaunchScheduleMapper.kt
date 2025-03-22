@@ -2,6 +2,7 @@ package com.meldcx.appscheduler.data.mapper
 
 import com.meldcx.appscheduler.data.model.LaunchScheduleEntity
 import com.meldcx.appscheduler.domain.model.LaunchSchedule
+import com.meldcx.appscheduler.domain.model.SCHEDULE_STATUS
 
 
 fun LaunchScheduleEntity.toDomain(): LaunchSchedule {
@@ -10,7 +11,7 @@ fun LaunchScheduleEntity.toDomain(): LaunchSchedule {
         packageName = this.packageName,
         appName = this.appName,
         scheduledTime = this.scheduledTime,
-        status = this.status
+        status = enumValues<SCHEDULE_STATUS>()[this.status]
     )
 }
 
@@ -20,6 +21,6 @@ fun LaunchSchedule.toEntity(): LaunchScheduleEntity {
         packageName = this.packageName,
         appName = this.appName,
         scheduledTime = this.scheduledTime,
-        status = this.status
+        status = this.status.ordinal
     )
 }

@@ -1,11 +1,10 @@
 package com.meldcx.appscheduler.domain.model
 
-enum class SCHEDULE_STATUS {
-    SCHEDULED,
-    EXECUTED,
-    CANCELLED_BY_USER,
-    FAILED_DUE_TO_APP_UNINSTALLED,
-    CANCELLED
+enum class SCHEDULE_STATUS(val order: Int) {
+    SCHEDULED(1),
+    EXECUTED(2),
+    CANCELLED_BY_USER(3),
+    FAILED_DUE_TO_APP_UNINSTALLED(4);
 }
 
 data class LaunchSchedule(

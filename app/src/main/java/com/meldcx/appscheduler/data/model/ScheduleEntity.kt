@@ -10,5 +10,5 @@ data class LaunchScheduleEntity(
     val packageName: String,
     val appName: String,
     val scheduledTime: Long,
-    val status: SCHEDULE_STATUS
+    val status: Int
 )

@@ -21,7 +21,7 @@ class ScheduleRepositoryImpl(
     }
 
     override suspend fun cancelLaunchSchedule(launchSchedule: LaunchSchedule) {
-        val cancelledLaunchSchedule = launchSchedule.copy(status = SCHEDULE_STATUS.CANCELLED)
+        val cancelledLaunchSchedule = launchSchedule.copy(status = SCHEDULE_STATUS.CANCELLED_BY_USER)
         launchScheduleDao.updateLaunchSchedule(cancelledLaunchSchedule.toEntity())
     }
 

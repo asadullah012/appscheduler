@@ -36,9 +36,9 @@ class LaunchScheduleViewModel(
     fun addSchedule(selectedApp: AppInfo, selectedDate: LocalDate, selectedTime: LocalTime){
 
         viewModelScope.launch {
-//            val scheduledDateTime = LocalDateTime.of(selectedDate, selectedTime)
-            val scheduledDateTime = LocalDateTime.now()
-            val scheduledMillis = scheduledDateTime.toInstant(ZoneOffset.systemDefault().rules.getOffset(scheduledDateTime)).toEpochMilli() + 10000L
+            val scheduledDateTime = LocalDateTime.of(selectedDate, selectedTime)
+            //val scheduledDateTime = LocalDateTime.now()
+            val scheduledMillis = scheduledDateTime.toInstant(ZoneOffset.systemDefault().rules.getOffset(scheduledDateTime)).toEpochMilli()
 
             launchScheduleUseCase.schedule(LaunchSchedule(
                 packageName = selectedApp.packageName,
@@ -51,9 +51,9 @@ class LaunchScheduleViewModel(
 
     fun updateLaunchSchedule(launchSchedule: LaunchSchedule, selectedDate: LocalDate, selectedTime: LocalTime){
         viewModelScope.launch {
-            //            val scheduledDateTime = LocalDateTime.of(selectedDate, selectedTime)
-            val scheduledDateTime = LocalDateTime.now()
-            val scheduledMillis = scheduledDateTime.toInstant(ZoneOffset.systemDefault().rules.getOffset(scheduledDateTime)).toEpochMilli() + 10000L
+            val scheduledDateTime = LocalDateTime.of(selectedDate, selectedTime)
+//          val scheduledDateTime = LocalDateTime.now()
+            val scheduledMillis = scheduledDateTime.toInstant(ZoneOffset.systemDefault().rules.getOffset(scheduledDateTime)).toEpochMilli()
             val updatedLaunchSchedule = launchSchedule.copy(
                 scheduledTime = scheduledMillis
             )
