@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "236293064414",
+    "project_id": "appscheduler-5737f",
+    "storage_bucket": "appscheduler-5737f.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:236293064414:android:6d3a6f7f58fb6c2154e44f",
+        "android_client_info": {
+          "package_name": "com.meldcx.appscheduler"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCiOdZQA2R_0CODRFSPUK9mNt3dvOFKBeo"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
