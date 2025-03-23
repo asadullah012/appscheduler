@@ -3,7 +3,6 @@ plugins {
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.compose)
     alias(libs.plugins.ksp)
-    alias(libs.plugins.google.service)
 }
 
 android {
@@ -64,9 +63,6 @@ dependencies {
 
     implementation(libs.accompanist.permissions)
     implementation(libs.accompanist.pager)
-
-    implementation(platform(libs.firebase.bom))
-    implementation(libs.firebase.analytics)
 
     implementation(libs.koin.android)
     implementation(libs.koin.androidx.compose)

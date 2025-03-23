@@ -1,7 +1,7 @@
 package com.galib.appscheduler.domain.repository
 
 import com.galib.appscheduler.domain.model.LaunchSchedule
-import com.galib.appscheduler.domain.model.SCHEDULE_STATUS
+import com.galib.appscheduler.domain.model.ScheduleStatus
 import kotlinx.coroutines.flow.Flow
 
 interface ScheduleRepository {
@@ -10,7 +10,7 @@ interface ScheduleRepository {
     suspend fun cancelLaunchSchedule(launchSchedule: LaunchSchedule)
     fun getLaunchSchedulesByScheduleId(scheduleId: Int): Flow<LaunchSchedule>
     fun getAllLaunchSchedules(): Flow<List<LaunchSchedule>>
-    fun getScheduleByStatus(status: SCHEDULE_STATUS): Flow<List<LaunchSchedule>>
+    fun getScheduleByStatus(status: ScheduleStatus): Flow<List<LaunchSchedule>>
     suspend fun deleteLaunchSchedulesByScheduleId(scheduleId: Int)
     suspend fun deleteAllLaunchSchedules()
 }

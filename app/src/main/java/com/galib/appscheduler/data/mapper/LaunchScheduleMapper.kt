@@ -2,7 +2,7 @@ package com.galib.appscheduler.data.mapper
 
 import com.galib.appscheduler.data.model.LaunchScheduleEntity
 import com.galib.appscheduler.domain.model.LaunchSchedule
-import com.galib.appscheduler.domain.model.SCHEDULE_STATUS
+import com.galib.appscheduler.domain.model.ScheduleStatus
 
 
 fun LaunchScheduleEntity.toDomain(): LaunchSchedule {
@@ -11,7 +11,7 @@ fun LaunchScheduleEntity.toDomain(): LaunchSchedule {
         packageName = this.packageName,
         appName = this.appName,
         scheduledTime = this.scheduledTime,
-        status = enumValues<SCHEDULE_STATUS>()[this.status]
+        status = enumValues<ScheduleStatus>()[this.status]
     )
 }
 

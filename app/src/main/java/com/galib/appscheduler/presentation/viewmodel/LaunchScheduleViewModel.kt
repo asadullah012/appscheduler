@@ -5,7 +5,7 @@ import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import com.galib.appscheduler.domain.model.AppInfo
 import com.galib.appscheduler.domain.model.LaunchSchedule
-import com.galib.appscheduler.domain.model.SCHEDULE_STATUS
+import com.galib.appscheduler.domain.model.ScheduleStatus
 import com.galib.appscheduler.domain.usecase.LaunchScheduleUseCase
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -41,7 +41,7 @@ class LaunchScheduleViewModel(
                 packageName = selectedApp.packageName,
                 appName = selectedApp.appName,
                 scheduledTime = scheduledMillis,
-                status = SCHEDULE_STATUS.SCHEDULED
+                status = ScheduleStatus.SCHEDULED
             ))
         }
     }
