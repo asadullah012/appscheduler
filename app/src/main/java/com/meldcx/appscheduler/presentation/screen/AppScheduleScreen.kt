@@ -29,7 +29,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.meldcx.appscheduler.R
 import com.meldcx.appscheduler.domain.model.LaunchSchedule
-import com.meldcx.appscheduler.domain.model.SCHEDULE_STATUS
+import com.meldcx.appscheduler.domain.model.ScheduleStatus
 import com.meldcx.appscheduler.presentation.viewmodel.LaunchScheduleViewModel
 import com.meldcx.appscheduler.utils.formatTimestamp
 import com.meldcx.appscheduler.utils.getIconDrawableByPackageName
@@ -75,7 +75,7 @@ fun ScheduleItem(launchScheduleViewModel: LaunchScheduleViewModel, launchSchedul
             containerColor = MaterialTheme.colorScheme.surfaceContainer,
         ),
         onClick = {
-            if(launchSchedule.status == SCHEDULE_STATUS.SCHEDULED) {
+            if(launchSchedule.status == ScheduleStatus.SCHEDULED) {
                 showBottomSheet = true
             } else {
                 Toast.makeText(context,

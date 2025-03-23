@@ -5,7 +5,7 @@ import android.content.Context
 import android.content.Intent
 import android.util.Log
 import com.meldcx.appscheduler.domain.model.LaunchSchedule
-import com.meldcx.appscheduler.domain.model.SCHEDULE_STATUS
+import com.meldcx.appscheduler.domain.model.ScheduleStatus
 import com.meldcx.appscheduler.domain.usecase.LaunchScheduleUseCase
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -30,9 +30,9 @@ class AlarmReceiver : BroadcastReceiver() {
         if (launchIntent != null) {
             launchIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
             context.startActivity(launchIntent)
-            launchSchedule?.status = SCHEDULE_STATUS.EXECUTED
+            launchSchedule?.status = ScheduleStatus.EXECUTED
         } else {
-            launchSchedule?.status = SCHEDULE_STATUS.FAILED_DUE_TO_APP_UNINSTALLED
+            launchSchedule?.status = ScheduleStatus.FAILED_DUE_TO_APP_UNINSTALLED
         }
 
         launchSchedule?.let {

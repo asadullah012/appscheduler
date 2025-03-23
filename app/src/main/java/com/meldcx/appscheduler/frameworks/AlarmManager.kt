@@ -7,11 +7,11 @@ import android.content.Intent
 import android.os.Build
 import android.util.Log
 import com.meldcx.appscheduler.domain.model.LaunchSchedule
-import com.meldcx.appscheduler.domain.model.SCHEDULE_STATUS
+import com.meldcx.appscheduler.domain.model.ScheduleStatus
 import com.meldcx.appscheduler.utils.formatTimestamp
 
 fun setAlarm(context: Context, launchSchedule: LaunchSchedule) {
-    if(launchSchedule.status != SCHEDULE_STATUS.SCHEDULED) {
+    if(launchSchedule.status != ScheduleStatus.SCHEDULED) {
         Log.e("AlarmManager", "setAlarm: no need to schedule ${launchSchedule.status}")
         return
     }

@@ -5,7 +5,7 @@ import android.content.Context
 import android.content.Intent
 import android.util.Log
 import com.meldcx.appscheduler.domain.model.LaunchSchedule
-import com.meldcx.appscheduler.domain.model.SCHEDULE_STATUS
+import com.meldcx.appscheduler.domain.model.ScheduleStatus
 import com.meldcx.appscheduler.domain.usecase.LaunchScheduleUseCase
 import com.meldcx.appscheduler.utils.formatTimestamp
 import kotlinx.coroutines.CoroutineScope
@@ -21,7 +21,7 @@ class BootReceiver : BroadcastReceiver() {
             Log.d("BootReceiver", "onReceive: checking for scheduled apps")
             val launchScheduleUseCase: LaunchScheduleUseCase = GlobalContext.get().get()
             val launchSchedules: List<LaunchSchedule> = runBlocking {
-                launchScheduleUseCase.getScheduledAppsByStatus(SCHEDULE_STATUS.SCHEDULED).first()
+                launchScheduleUseCase.getScheduledAppsByStatus(ScheduleStatus.SCHEDULED).first()
             }
             Log.d("BootReceiver", "onReceive: ${launchSchedules.size}")
             launchSchedules.forEach {
@@ -29,7 +29,7 @@ class BootReceiver : BroadcastReceiver() {
                 if(it.scheduledTime < System.currentTimeMillis()) {
                     Log.e("BootReceiver", "setAlarm: scheduled time is in the past")
                     CoroutineScope(Dispatchers.IO).launch {
-                        launchScheduleUseCase.update(it.copy(status = SCHEDULE_STATUS.FAILED_DUE_TO_DEVICE_TURNED_OFF))
+                        launchScheduleUseCase.update(it.copy(status = ScheduleStatus.FAILED_DUE_TO_DEVICE_TURNED_OFF))
                     }
                 } else {
                     if(!isAlarmScheduled(context, it.scheduleId)){

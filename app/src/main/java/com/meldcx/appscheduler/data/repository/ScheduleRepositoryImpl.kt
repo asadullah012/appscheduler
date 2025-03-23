@@ -4,7 +4,7 @@ import com.meldcx.appscheduler.data.local.LaunchScheduleDao
 import com.meldcx.appscheduler.data.mapper.toDomain
 import com.meldcx.appscheduler.data.mapper.toEntity
 import com.meldcx.appscheduler.domain.model.LaunchSchedule
-import com.meldcx.appscheduler.domain.model.SCHEDULE_STATUS
+import com.meldcx.appscheduler.domain.model.ScheduleStatus
 import com.meldcx.appscheduler.domain.repository.ScheduleRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
@@ -21,7 +21,7 @@ class ScheduleRepositoryImpl(
     }
 
     override suspend fun cancelLaunchSchedule(launchSchedule: LaunchSchedule) {
-        val cancelledLaunchSchedule = launchSchedule.copy(status = SCHEDULE_STATUS.CANCELLED_BY_USER)
+        val cancelledLaunchSchedule = launchSchedule.copy(status = ScheduleStatus.CANCELLED_BY_USER)
         launchScheduleDao.updateLaunchSchedule(cancelledLaunchSchedule.toEntity())
     }
 
@@ -37,7 +37,7 @@ class ScheduleRepositoryImpl(
         }
     }
 
-    override fun getScheduleByStatus(status: SCHEDULE_STATUS): Flow<List<LaunchSchedule>> {
+    override fun getScheduleByStatus(status: ScheduleStatus): Flow<List<LaunchSchedule>> {
         return launchScheduleDao.getScheduleByStatus(status.ordinal).map { entities ->
             entities.map { it.toDomain() }
         }

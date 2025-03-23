@@ -2,7 +2,7 @@ package com.meldcx.appscheduler.data.model
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey
-import com.meldcx.appscheduler.domain.model.SCHEDULE_STATUS
+import com.meldcx.appscheduler.domain.model.ScheduleStatus
 
 @Entity(tableName = "launch_schedule")
 data class LaunchScheduleEntity(

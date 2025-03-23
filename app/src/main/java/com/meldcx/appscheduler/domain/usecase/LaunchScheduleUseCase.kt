@@ -2,7 +2,7 @@ package com.meldcx.appscheduler.domain.usecase
 
 import android.content.Context
 import com.meldcx.appscheduler.domain.model.LaunchSchedule
-import com.meldcx.appscheduler.domain.model.SCHEDULE_STATUS
+import com.meldcx.appscheduler.domain.model.ScheduleStatus
 import com.meldcx.appscheduler.domain.repository.ScheduleRepository
 import com.meldcx.appscheduler.frameworks.cancelAlarm
 import com.meldcx.appscheduler.frameworks.setAlarm
@@ -21,7 +21,7 @@ class LaunchScheduleUseCase(
 
     suspend fun update(launchSchedule: LaunchSchedule) {
         scheduleRepository.updateLaunchSchedule(launchSchedule)
-        if(launchSchedule.status == SCHEDULE_STATUS.SCHEDULED) {
+        if(launchSchedule.status == ScheduleStatus.SCHEDULED) {
             updateAlarm(context, launchSchedule)
         }
     }
@@ -39,7 +39,7 @@ class LaunchScheduleUseCase(
         return scheduleRepository.getAllLaunchSchedules()
     }
 
-    fun getScheduledAppsByStatus(status: SCHEDULE_STATUS): Flow<List<LaunchSchedule>> {
+    fun getScheduledAppsByStatus(status: ScheduleStatus): Flow<List<LaunchSchedule>> {
         return scheduleRepository.getScheduleByStatus(status)
     }
 
