@@ -11,7 +11,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.withContext
 import org.koin.core.context.GlobalContext
 
 class AlarmReceiver : BroadcastReceiver() {
@@ -21,23 +21,23 @@ class AlarmReceiver : BroadcastReceiver() {
         Log.d("AlarmReceiver", "onReceive: $packageName $scheduleId")
 
         val launchScheduleUseCase: LaunchScheduleUseCase = GlobalContext.get().get()
+        CoroutineScope(Dispatchers.IO).launch {
+            val launchSchedule: LaunchSchedule? = launchScheduleUseCase.getByScheduleId(scheduleId).firstOrNull()
+            withContext(Dispatchers.Main) {
+                val launchIntent = context.packageManager.getLaunchIntentForPackage(packageName)
+                if (launchIntent != null) {
+                    launchIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                    context.startActivity(launchIntent)
+                    launchSchedule?.status = ScheduleStatus.EXECUTED
+                } else {
+                    launchSchedule?.status = ScheduleStatus.FAILED_DUE_TO_APP_UNINSTALLED
+                }
 
-        val launchSchedule: LaunchSchedule? = runBlocking {
-            launchScheduleUseCase.getByScheduleId(scheduleId).firstOrNull()
-        }
-
-        val launchIntent = context.packageManager.getLaunchIntentForPackage(packageName)
-        if (launchIntent != null) {
-            launchIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-            context.startActivity(launchIntent)
-            launchSchedule?.status = ScheduleStatus.EXECUTED
-        } else {
-            launchSchedule?.status = ScheduleStatus.FAILED_DUE_TO_APP_UNINSTALLED
-        }
-
-        launchSchedule?.let {
-            CoroutineScope(Dispatchers.IO).launch {
-                launchScheduleUseCase.update(it)
+                launchSchedule?.let {
+                    withContext(Dispatchers.IO) {
+                        launchScheduleUseCase.update(it)
+                    }
+                }
             }
         }
     }

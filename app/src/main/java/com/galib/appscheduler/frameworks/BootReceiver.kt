@@ -12,7 +12,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.withContext
 import org.koin.core.context.GlobalContext
 
 class BootReceiver : BroadcastReceiver() {
@@ -20,25 +20,29 @@ class BootReceiver : BroadcastReceiver() {
         if (intent?.action == Intent.ACTION_BOOT_COMPLETED || intent?.action == Intent.ACTION_LOCKED_BOOT_COMPLETED) {
             Log.d("BootReceiver", "onReceive: checking for scheduled apps")
             val launchScheduleUseCase: LaunchScheduleUseCase = GlobalContext.get().get()
-            val launchSchedules: List<LaunchSchedule> = runBlocking {
-                launchScheduleUseCase.getScheduledAppsByStatus(ScheduleStatus.SCHEDULED).first()
-            }
-            Log.d("BootReceiver", "onReceive: ${launchSchedules.size}")
-            launchSchedules.forEach {
-                Log.d("BootReceiver", "Checking for alarm: ${it.appName} at ${formatTimestamp(it.scheduledTime)}")
-                if(it.scheduledTime < System.currentTimeMillis()) {
-                    Log.e("BootReceiver", "setAlarm: scheduled time is in the past")
-                    CoroutineScope(Dispatchers.IO).launch {
-                        launchScheduleUseCase.update(it.copy(status = ScheduleStatus.FAILED_DUE_TO_DEVICE_TURNED_OFF))
-                    }
-                } else {
-                    if(!isAlarmScheduled(context, it.scheduleId)){
-                        setAlarm(context, it)
-                    } else {
-                        Log.d("BootReceiver", "setAlarm: alarm is already scheduled")
+            CoroutineScope(Dispatchers.IO).launch {
+                val launchSchedules: List<LaunchSchedule> = launchScheduleUseCase.getScheduledAppsByStatus(ScheduleStatus.SCHEDULED).first()
+                Log.d("BootReceiver", "onReceive: ${launchSchedules.size}")
+                withContext(Dispatchers.Main){
+                    launchSchedules.forEach {
+                        Log.d("BootReceiver", "Checking for alarm: ${it.appName} at ${formatTimestamp(it.scheduledTime)}")
+                        if(it.scheduledTime < System.currentTimeMillis()) {
+                            Log.e("BootReceiver", "setAlarm: scheduled time is in the past")
+                            withContext(Dispatchers.IO) {
+                                launchScheduleUseCase.update(it.copy(status = ScheduleStatus.FAILED_DUE_TO_DEVICE_TURNED_OFF))
+                            }
+                        } else {
+                            if(!isAlarmScheduled(context, it.scheduleId)){
+                                setAlarm(context, it)
+                            } else {
+                                Log.d("BootReceiver", "setAlarm: alarm is already scheduled")
+                            }
+                        }
                     }
                 }
+
             }
+
         }
     }
 }
