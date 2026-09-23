@@ -20,24 +20,31 @@ class AlarmReceiver : BroadcastReceiver() {
         val scheduleId = intent.getIntExtra("SCHEDULE_ID", -1)
         Log.d("AlarmReceiver", "onReceive: $packageName $scheduleId")
 
+        val pendingResult = goAsync()
         val launchScheduleUseCase: LaunchScheduleUseCase = GlobalContext.get().get()
         CoroutineScope(Dispatchers.IO).launch {
-            val launchSchedule: LaunchSchedule? = launchScheduleUseCase.getByScheduleId(scheduleId).firstOrNull()
-            withContext(Dispatchers.Main) {
-                val launchIntent = context.packageManager.getLaunchIntentForPackage(packageName)
-                if (launchIntent != null) {
-                    launchIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-                    context.startActivity(launchIntent)
-                    launchSchedule?.status = ScheduleStatus.EXECUTED
-                } else {
-                    launchSchedule?.status = ScheduleStatus.FAILED_DUE_TO_APP_UNINSTALLED
-                }
+            try {
+                val launchSchedule: LaunchSchedule? = launchScheduleUseCase.getByScheduleId(scheduleId).firstOrNull()
+                withContext(Dispatchers.Main) {
+                    val launchIntent = context.packageManager.getLaunchIntentForPackage(packageName)
+                    if (launchIntent != null) {
+                        launchIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                        context.startActivity(launchIntent)
+                        launchSchedule?.status = ScheduleStatus.EXECUTED
+                    } else {
+                        launchSchedule?.status = ScheduleStatus.FAILED_DUE_TO_APP_UNINSTALLED
+                    }
 
-                launchSchedule?.let {
-                    withContext(Dispatchers.IO) {
-                        launchScheduleUseCase.update(it)
+                    launchSchedule?.let {
+                        withContext(Dispatchers.IO) {
+                            launchScheduleUseCase.update(it)
+                        }
                     }
                 }
+            } catch (e: Exception) {
+                Log.e("AlarmReceiver", "Error handling scheduled alarm", e)
+            } finally {
+                pendingResult.finish()
             }
         }
     }

@@ -13,3 +13,18 @@
 .externalNativeBuild
 .cxx
 local.properties
+
+# Keystores & Signing Keys
+key
+*.jks
+*.keystore
+
+# APKs & Release Binaries
+*.apk
+*.aab
+apk/
+app/release/
+
+# Documents & Cache
+*.docx
+.kotlin/

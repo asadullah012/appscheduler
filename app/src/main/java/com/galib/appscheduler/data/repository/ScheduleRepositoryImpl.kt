@@ -48,6 +48,6 @@ class ScheduleRepositoryImpl(
     }
 
     override suspend fun deleteAllLaunchSchedules() {
-        launchScheduleDao.deleteAllaLaunchSchedules()
+        launchScheduleDao.deleteAllLaunchSchedules()
     }
 }

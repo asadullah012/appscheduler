@@ -17,7 +17,7 @@ import java.util.Locale
 fun getIconDrawableByPackageName(context: Context, packageName: String) : ImageBitmap {
     val packageManager = context.packageManager
 
-    val iconDrawable = remember {
+    val iconDrawable = remember(packageName) {
         try {
             packageManager.getApplicationIcon(packageName)
         } catch (e: PackageManager.NameNotFoundException) {
@@ -28,7 +28,8 @@ fun getIconDrawableByPackageName(context: Context, packageName: String) : ImageB
     if (iconDrawable != null) {
         return iconDrawable.toBitmap().asImageBitmap()
     }
-    return AppCompatResources.getDrawable(context, R.mipmap.ic_launcher)!!.toBitmap().asImageBitmap()
+    val defaultDrawable = AppCompatResources.getDrawable(context, R.mipmap.ic_launcher)
+    return (defaultDrawable?.toBitmap() ?: android.graphics.Bitmap.createBitmap(48, 48, android.graphics.Bitmap.Config.ARGB_8888)).asImageBitmap()
 }
 
 fun formatTimestamp(timestamp: Long): String {

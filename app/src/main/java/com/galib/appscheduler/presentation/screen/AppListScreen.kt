@@ -35,6 +35,7 @@ import org.koin.androidx.compose.koinViewModel
 @Composable
 fun AppListScreen() {
     val appViewModel: AppViewModel = koinViewModel()
+    val launchScheduleViewModel: LaunchScheduleViewModel = koinViewModel()
     val apps by appViewModel.apps.collectAsState()
 
     Column(modifier = Modifier
@@ -52,19 +53,25 @@ fun AppListScreen() {
             modifier = Modifier.fillMaxSize(),
             columns = GridCells.Adaptive(minSize = 100.dp)
         ) {
-            items(apps) { app ->
-                InstalledAppItem(app)
+            items(apps, key = { it.packageName }) { app ->
+                InstalledAppItem(
+                    app = app,
+                    onScheduleApp = { selectedApp, dateTime ->
+                        launchScheduleViewModel.addSchedule(selectedApp, dateTime)
+                    }
+                )
             }
         }
     }
-
 }
 
 @Composable
-fun InstalledAppItem(app: AppInfo){
+fun InstalledAppItem(
+    app: AppInfo,
+    onScheduleApp: (AppInfo, java.time.LocalDateTime) -> Unit
+){
     val context = LocalContext.current
     var showBottomSheet by remember { mutableStateOf(false) }
-    val launchScheduleViewModel: LaunchScheduleViewModel = koinViewModel()
 
     Card(
         modifier = Modifier
@@ -98,7 +105,7 @@ fun InstalledAppItem(app: AppInfo){
             showBottomSheet = showBottomSheet,
             onSchedule = { selectedDateTime ->
                 if(selectedDateTime != null )
-                    launchScheduleViewModel.addSchedule(app, selectedDateTime)
+                    onScheduleApp(app, selectedDateTime)
             },
             onDismissRequest = { showBottomSheet = false }
         )

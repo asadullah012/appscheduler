@@ -54,8 +54,16 @@ fun AppScheduleScreen() {
             Text(stringResource(R.string.no_scheduled_apps))
         } else {
             LazyColumn {
-                items(launchSchedules) { launchSchedule ->
-                    ScheduleItem(launchScheduleViewModel, launchSchedule)
+                items(launchSchedules, key = { it.scheduleId }) { launchSchedule ->
+                    ScheduleItem(
+                        launchSchedule = launchSchedule,
+                        onUpdateSchedule = { schedule, newTime ->
+                            launchScheduleViewModel.updateLaunchSchedule(schedule, newTime)
+                        },
+                        onCancelSchedule = { schedule ->
+                            launchScheduleViewModel.cancelLaunchSchedule(schedule)
+                        }
+                    )
                 }
             }
         }
@@ -63,7 +71,11 @@ fun AppScheduleScreen() {
 }
 
 @Composable
-fun ScheduleItem(launchScheduleViewModel: LaunchScheduleViewModel, launchSchedule: LaunchSchedule) {
+fun ScheduleItem(
+    launchSchedule: LaunchSchedule,
+    onUpdateSchedule: (LaunchSchedule, java.time.LocalDateTime) -> Unit,
+    onCancelSchedule: (LaunchSchedule) -> Unit
+) {
     val context = LocalContext.current
     var showBottomSheet by remember { mutableStateOf(false) }
 
@@ -120,11 +132,11 @@ fun ScheduleItem(launchScheduleViewModel: LaunchScheduleViewModel, launchSchedul
             showBottomSheet = showBottomSheet,
             onSchedule = { selectedDateTime ->
                 if(selectedDateTime != null){
-                    launchScheduleViewModel.updateLaunchSchedule(launchSchedule, selectedDateTime)
+                    onUpdateSchedule(launchSchedule, selectedDateTime)
                 }
             },
             onCancelSchedule = {
-                launchScheduleViewModel.cancelLaunchSchedule(launchSchedule)
+                onCancelSchedule(launchSchedule)
             },
             onDismissRequest = {
                 showBottomSheet = false

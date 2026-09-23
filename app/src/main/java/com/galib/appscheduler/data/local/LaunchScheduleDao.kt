@@ -27,7 +27,7 @@ interface LaunchScheduleDao {
     suspend fun updateLaunchSchedule(launchSchedule: LaunchScheduleEntity)
 
     @Query("DELETE FROM launch_schedule")
-    suspend fun deleteAllaLaunchSchedules()
+    suspend fun deleteAllLaunchSchedules()
 
     @Query("DELETE FROM launch_schedule WHERE scheduleId = :scheduleId")
     suspend fun deleteLaunchSchedulesByScheduleId(scheduleId: Int)

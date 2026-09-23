@@ -76,9 +76,9 @@ fun ScheduleBottomSheet(
 
                 Spacer(modifier = Modifier.height(16.dp))
 
-                if(reschedule){
+                if(reschedule && scheduledTime != null){
                     Text(
-                        "Existing Schedule: ${formatTimestamp(scheduledTime!!)}",
+                        "Existing Schedule: ${formatTimestamp(scheduledTime)}",
                         style = MaterialTheme.typography.bodySmall,
                         textAlign = TextAlign.Center
                     )
