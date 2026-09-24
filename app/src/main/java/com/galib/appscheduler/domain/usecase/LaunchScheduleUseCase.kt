@@ -1,34 +1,51 @@
 package com.galib.appscheduler.domain.usecase
 
-import android.content.Context
 import com.galib.appscheduler.domain.model.LaunchSchedule
+import com.galib.appscheduler.domain.model.ScheduleResult
 import com.galib.appscheduler.domain.model.ScheduleStatus
 import com.galib.appscheduler.domain.repository.ScheduleRepository
-import com.galib.appscheduler.frameworks.cancelAlarm
-import com.galib.appscheduler.frameworks.setAlarm
-import com.galib.appscheduler.frameworks.updateAlarm
+import com.galib.appscheduler.domain.scheduler.AlarmScheduler
 import kotlinx.coroutines.flow.Flow
 
 class LaunchScheduleUseCase(
-    private val context: Context,
+    private val alarmScheduler: AlarmScheduler,
     private val scheduleRepository: ScheduleRepository
 ) {
-    suspend fun schedule(launchSchedule: LaunchSchedule) {
+    suspend fun schedule(launchSchedule: LaunchSchedule): ScheduleResult {
+        if (launchSchedule.scheduledTime <= System.currentTimeMillis()) {
+            return ScheduleResult.PastTimeError
+        }
+        val conflicting = scheduleRepository.findConflictingSchedule(launchSchedule.scheduledTime)
+        if (conflicting != null) {
+            return ScheduleResult.Conflict(conflicting)
+        }
         val scheduleId = scheduleRepository.scheduleAppLaunch(launchSchedule)
         val updatedLaunchSchedule = launchSchedule.copy(scheduleId = scheduleId)
-        setAlarm(context, updatedLaunchSchedule)
+        alarmScheduler.schedule(updatedLaunchSchedule)
+        return ScheduleResult.Success(scheduleId)
     }
 
-    suspend fun update(launchSchedule: LaunchSchedule) {
-        scheduleRepository.updateLaunchSchedule(launchSchedule)
-        if(launchSchedule.status == ScheduleStatus.SCHEDULED) {
-            updateAlarm(context, launchSchedule)
+    suspend fun update(launchSchedule: LaunchSchedule): ScheduleResult {
+        if (launchSchedule.status == ScheduleStatus.SCHEDULED) {
+            if (launchSchedule.scheduledTime <= System.currentTimeMillis()) {
+                return ScheduleResult.PastTimeError
+            }
+            val conflicting = scheduleRepository.findConflictingSchedule(
+                time = launchSchedule.scheduledTime,
+                excludeScheduleId = launchSchedule.scheduleId
+            )
+            if (conflicting != null) {
+                return ScheduleResult.Conflict(conflicting)
+            }
+            alarmScheduler.update(launchSchedule)
         }
+        scheduleRepository.updateLaunchSchedule(launchSchedule)
+        return ScheduleResult.Success(launchSchedule.scheduleId)
     }
 
     suspend fun cancel(launchSchedule: LaunchSchedule) {
         scheduleRepository.cancelLaunchSchedule(launchSchedule)
-        cancelAlarm(context, launchSchedule)
+        alarmScheduler.cancel(launchSchedule)
     }
 
     fun getByScheduleId(scheduleId: Int): Flow<LaunchSchedule> {
@@ -43,11 +60,11 @@ class LaunchScheduleUseCase(
         return scheduleRepository.getScheduleByStatus(status)
     }
 
-    suspend fun deleteByScheduleId(scheduleId: Int){
-        return scheduleRepository.deleteLaunchSchedulesByScheduleId(scheduleId)
+    suspend fun deleteByScheduleId(scheduleId: Int) {
+        scheduleRepository.deleteLaunchSchedulesByScheduleId(scheduleId)
     }
 
-    suspend fun deleteAllSchedule(){
-        return scheduleRepository.deleteAllLaunchSchedules()
+    suspend fun deleteAllSchedule() {
+        scheduleRepository.deleteAllLaunchSchedules()
     }
 }

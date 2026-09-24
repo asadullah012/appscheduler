@@ -32,11 +32,44 @@ import com.galib.appscheduler.presentation.viewmodel.LaunchScheduleViewModel
 import com.galib.appscheduler.utils.getIconDrawableByPackageName
 import org.koin.androidx.compose.koinViewModel
 
+import android.widget.Toast
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.ui.Alignment
+import com.galib.appscheduler.domain.model.ScheduleResult
+import com.galib.appscheduler.presentation.viewmodel.AppListUiState
+
 @Composable
 fun AppListScreen() {
+    val context = LocalContext.current
     val appViewModel: AppViewModel = koinViewModel()
     val launchScheduleViewModel: LaunchScheduleViewModel = koinViewModel()
-    val apps by appViewModel.apps.collectAsState()
+    val uiState by appViewModel.uiState.collectAsState()
+
+    LaunchedEffect(launchScheduleViewModel) {
+        launchScheduleViewModel.scheduleEvent.collect { result ->
+            when (result) {
+                is ScheduleResult.Success -> {
+                    Toast.makeText(context, "App scheduled successfully!", Toast.LENGTH_SHORT).show()
+                }
+                is ScheduleResult.Conflict -> {
+                    Toast.makeText(
+                        context,
+                        "Conflict: '${result.conflictingSchedule.appName}' is already scheduled within this time!",
+                        Toast.LENGTH_LONG
+                    ).show()
+                }
+                is ScheduleResult.PastTimeError -> {
+                    Toast.makeText(context, "Cannot schedule in the past.", Toast.LENGTH_SHORT).show()
+                }
+                is ScheduleResult.Failure -> {
+                    Toast.makeText(context, result.message, Toast.LENGTH_SHORT).show()
+                }
+            }
+        }
+    }
 
     Column(modifier = Modifier
         .fillMaxSize()
@@ -49,17 +82,42 @@ fun AppListScreen() {
                 .fillMaxWidth()
                 .padding(start = 16.dp, end = 16.dp, bottom = 8.dp)
         )
-        LazyVerticalGrid(
-            modifier = Modifier.fillMaxSize(),
-            columns = GridCells.Adaptive(minSize = 100.dp)
-        ) {
-            items(apps, key = { it.packageName }) { app ->
-                InstalledAppItem(
-                    app = app,
-                    onScheduleApp = { selectedApp, dateTime ->
-                        launchScheduleViewModel.addSchedule(selectedApp, dateTime)
+
+        when (val state = uiState) {
+            is AppListUiState.Loading -> {
+                Box(
+                    modifier = Modifier.fillMaxSize(),
+                    contentAlignment = Alignment.Center
+                ) {
+                    CircularProgressIndicator()
+                }
+            }
+            is AppListUiState.Error -> {
+                Box(
+                    modifier = Modifier.fillMaxSize(),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Text(
+                        text = state.message,
+                        color = MaterialTheme.colorScheme.error,
+                        textAlign = TextAlign.Center
+                    )
+                }
+            }
+            is AppListUiState.Success -> {
+                LazyVerticalGrid(
+                    modifier = Modifier.fillMaxSize(),
+                    columns = GridCells.Adaptive(minSize = 100.dp)
+                ) {
+                    items(state.apps, key = { it.packageName }) { app ->
+                        InstalledAppItem(
+                            app = app,
+                            onScheduleApp = { selectedApp, dateTime ->
+                                launchScheduleViewModel.addSchedule(selectedApp, dateTime)
+                            }
+                        )
                     }
-                )
+                }
             }
         }
     }

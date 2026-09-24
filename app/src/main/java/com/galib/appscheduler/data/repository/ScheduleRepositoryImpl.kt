@@ -50,4 +50,10 @@ class ScheduleRepositoryImpl(
     override suspend fun deleteAllLaunchSchedules() {
         launchScheduleDao.deleteAllLaunchSchedules()
     }
+
+    override suspend fun findConflictingSchedule(time: Long, bufferMillis: Long, excludeScheduleId: Int): LaunchSchedule? {
+        val startTime = time - bufferMillis
+        val endTime = time + bufferMillis
+        return launchScheduleDao.findConflictingSchedule(startTime, endTime, excludeScheduleId)?.toDomain()
+    }
 }

@@ -112,4 +112,23 @@ class ScheduleRepositoryImplTest {
 
         coVerify(exactly = 1) { dao.deleteAllLaunchSchedules() }
     }
+
+    @Test
+    fun `findConflictingSchedule delegates to DAO with buffer range`() = runTest {
+        val targetTime = 500_000L
+        val buffer = 60_000L
+        val entity = LaunchScheduleEntity(
+            scheduleId = 9,
+            packageName = "com.conflict.app",
+            appName = "Conflict App",
+            scheduledTime = 510_000L,
+            status = ScheduleStatus.SCHEDULED.ordinal
+        )
+        coEvery { dao.findConflictingSchedule(440_000L, 560_000L, -1) } returns entity
+
+        val result = repository.findConflictingSchedule(targetTime, buffer, -1)
+
+        assertEquals("Conflict App", result?.appName)
+        assertEquals(9, result?.scheduleId)
+    }
 }

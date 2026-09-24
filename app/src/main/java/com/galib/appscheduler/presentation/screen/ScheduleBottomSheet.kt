@@ -150,7 +150,7 @@ fun ScheduleBottomSheet(
         DatePickerModal(
             onDateSelected = {
                 selectedDate = it?.let { millis ->
-                    LocalDate.ofEpochDay(millis / (24 * 60 * 60 * 1000))
+                    java.time.Instant.ofEpochMilli(millis).atZone(java.time.ZoneId.of("UTC")).toLocalDate()
                 }
                 showDatePicker = false
             },

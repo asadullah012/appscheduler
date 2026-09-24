@@ -35,10 +35,37 @@ import com.galib.appscheduler.utils.formatTimestamp
 import com.galib.appscheduler.utils.getIconDrawableByPackageName
 import org.koin.androidx.compose.koinViewModel
 
+import androidx.compose.runtime.LaunchedEffect
+import com.galib.appscheduler.domain.model.ScheduleResult
+
 @Composable
 fun AppScheduleScreen() {
+    val context = LocalContext.current
     val launchScheduleViewModel: LaunchScheduleViewModel = koinViewModel()
     val launchSchedules by launchScheduleViewModel.apps.collectAsState()
+
+    LaunchedEffect(launchScheduleViewModel) {
+        launchScheduleViewModel.scheduleEvent.collect { result ->
+            when (result) {
+                is ScheduleResult.Success -> {
+                    Toast.makeText(context, "Schedule updated successfully!", Toast.LENGTH_SHORT).show()
+                }
+                is ScheduleResult.Conflict -> {
+                    Toast.makeText(
+                        context,
+                        "Conflict: '${result.conflictingSchedule.appName}' is already scheduled within this time!",
+                        Toast.LENGTH_LONG
+                    ).show()
+                }
+                is ScheduleResult.PastTimeError -> {
+                    Toast.makeText(context, "Cannot reschedule in the past.", Toast.LENGTH_SHORT).show()
+                }
+                is ScheduleResult.Failure -> {
+                    Toast.makeText(context, result.message, Toast.LENGTH_SHORT).show()
+                }
+            }
+        }
+    }
     Column(modifier = Modifier
         .fillMaxSize()
         .padding(16.dp)) {

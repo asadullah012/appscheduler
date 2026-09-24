@@ -20,6 +20,9 @@ interface LaunchScheduleDao {
     @Query("SELECT * FROM launch_schedule WHERE status = :status")
     fun getScheduleByStatus(status: Int): Flow<List<LaunchScheduleEntity>>
 
+    @Query("SELECT * FROM launch_schedule WHERE status = 0 AND scheduledTime BETWEEN :startTime AND :endTime AND scheduleId != :excludeScheduleId LIMIT 1")
+    suspend fun findConflictingSchedule(startTime: Long, endTime: Long, excludeScheduleId: Int): LaunchScheduleEntity?
+
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertLaunchSchedule(launchSchedule: LaunchScheduleEntity): Long
 

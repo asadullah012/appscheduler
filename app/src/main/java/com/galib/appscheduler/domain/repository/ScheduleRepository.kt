@@ -13,4 +13,5 @@ interface ScheduleRepository {
     fun getScheduleByStatus(status: ScheduleStatus): Flow<List<LaunchSchedule>>
     suspend fun deleteLaunchSchedulesByScheduleId(scheduleId: Int)
     suspend fun deleteAllLaunchSchedules()
+    suspend fun findConflictingSchedule(time: Long, bufferMillis: Long = 60_000L, excludeScheduleId: Int = -1): LaunchSchedule?
 }
