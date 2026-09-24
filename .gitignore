@@ -18,10 +18,12 @@ local.properties
 key
 *.jks
 *.keystore
+keystore/
 
 # APKs & Release Binaries
 *.apk
 *.aab
+*.idsig
 apk/
 app/release/
 
