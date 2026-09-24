@@ -62,9 +62,10 @@ jobs:
           path: AppScheduler-v1.0.0.apk
 
       - name: Attach APK to GitHub Release
-        if: github.event_name == 'release'
+        if: github.event_name == 'release' || startsWith(github.ref, 'refs/tags/')
         uses: softprops/action-gh-release@v2
         with:
+          tag_name: ${{ github.ref_name }}
           files: AppScheduler-v1.0.0.apk
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
